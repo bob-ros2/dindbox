@@ -149,6 +149,8 @@ The backend source code is in the `./src` directory. It's recommended to use a P
 
 ## Security Considerations
 
+-   **AI Agent Control**: This project is designed to empower AI agents by giving them the ability to manage Docker containers, which can include executing code. While this enables many powerful applications beyond simple chat responses, it's important to be aware of the responsibility that comes with it. An unconstrained or improperly prompted AI agent could perform unintended actions within the sandboxed environment. It is recommended to use this tool with AI agents that have appropriate safeguards, constraints, or human oversight in place.
+
 -   **Network Exposure**: By default, the API/UI port (`8000`) and the SSH port (`2223`) are exposed on the host. If this host is accessible on a network, these endpoints will be too. It is critical to ensure that these ports are protected by a firewall or only exposed on trusted networks. For production or multi-user environments, you should implement proper authentication and authorization for the API and disable password-based SSH authentication in favor of SSH keys.
 
 -   **Docker-in-Docker (DinD) Isolation**: While DinD provides a separate Docker environment, it is not a perfect security sandbox. The inner Docker daemon runs as root within the main container and shares the host machine's kernel. A sophisticated attacker who achieves root access inside the container could potentially exploit kernel vulnerabilities to gain access to the underlying host system. Do not run untrusted or malicious container images in this environment if host security is a critical concern.
