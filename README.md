@@ -49,7 +49,8 @@ The system is composed of several key components running within a single Docker 
 3.  **Build and Run the Service**
     Use Docker Compose to build the image and start the container in detached mode:
     ```bash
-    docker-compose up --build -d
+    # remove -d option to see the application running
+    docker compose up --build -d
     ```
     This command builds the multi-stage Docker image, which includes building the React frontend and setting up the Python environment, then starts the service.
 
