@@ -1,7 +1,7 @@
 
 # Docker API Client
 
-A modern, responsive web-based UI for interacting with a Docker API server. This application allows users to easily manage Docker containers, images, networks, and volumes by selecting API services from a grouped dropdown, providing the necessary parameters, and viewing the JSON response with syntax highlighting.
+A responsive web-based UI for interacting with a Docker API server. This application allows users to easily manage Docker containers, images, networks, and volumes by selecting API services from a grouped dropdown, providing the necessary parameters, and viewing the JSON response with syntax highlighting.
 
 ## Features
 
@@ -26,8 +26,6 @@ This application is set up to run in a web-based development environment that su
 2.  It loads Tailwind CSS from a CDN.
 3.  An `importmap` is used to resolve module specifiers for `react` and `react-dom`.
 4.  The main application logic is loaded via `<script type="module" src="/index.tsx"></script>`.
-
-There is no `npm install` or build step required.
 
 ## API Integration
 
