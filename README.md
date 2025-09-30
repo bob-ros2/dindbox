@@ -11,7 +11,7 @@ The system is composed of several key components running within a single Docker 
 -   **Host Machine**: Runs the main Docker service.
 -   **Main Container (`server` service)**:
     -   **Docker Daemon (DinD)**: An isolated Docker engine, completely separate from the host's Docker daemon. Its data is persisted in a named volume (`dind-storage`).
-    -   **FastAPI Backend**: A Python application that serves a REST API to control the inner Docker daemon. It also serves the frontend web application.
+    -   **FastAPI Backend**: A Python application that serves a REST API to control the inner Docker daemon. It also serves a basic frontend web application to manage the Docker components like Container, Images ...
     -   **React Frontend**: A responsive web UI for interacting with the API to manage containers, images, etc.
     -   **SSH Server**: Provides direct shell access into the container for advanced management and debugging.
 
