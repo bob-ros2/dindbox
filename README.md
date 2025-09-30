@@ -147,6 +147,12 @@ The backend source code is in the `./src` directory. It's recommended to use a P
     ```
     The `--reload` flag enables hot-reloading when source files change. Note that this local server will not have access to a Docker daemon unless you have one running and configured.
 
+## Security Considerations
+
+-   **Network Exposure**: By default, the API/UI port (`8000`) and the SSH port (`2223`) are exposed on the host. If this host is accessible on a network, these endpoints will be too. It is critical to ensure that these ports are protected by a firewall or only exposed on trusted networks. For production or multi-user environments, you should implement proper authentication and authorization for the API and disable password-based SSH authentication in favor of SSH keys.
+
+-   **Docker-in-Docker (DinD) Isolation**: While DinD provides a separate Docker environment, it is not a perfect security sandbox. The inner Docker daemon runs as root within the main container and shares the host machine's kernel. A sophisticated attacker who achieves root access inside the container could potentially exploit kernel vulnerabilities to gain access to the underlying host system. Do not run untrusted or malicious container images in this environment if host security is a critical concern.
+
 ## Project Structure
 
 ```
