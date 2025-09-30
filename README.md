@@ -1,6 +1,6 @@
-# Docker-in-Docker API Server & Web UI
+# Docker DinD API/UI/MCP Server
 
-This project provides a complete environment for managing an isolated Docker instance through both a RESTful API and a modern web interface. It runs a true Docker-in-Docker (DinD) daemon inside a container, making it a powerful tool for CI/CD, automated testing, or providing sandboxed Docker environments.
+This project provides a complete environment for managing an isolated Docker instance through a RESTful API, a modern web interface and a MCP server for AI agents. It runs a true Docker-in-Docker (DinD) daemon inside a container, making it a powerful tool for CI/CD, automated testing, or providing sandboxed Docker environments.
 
 The entire application is containerized and orchestrated with Docker Compose, including a Python FastAPI backend, a React/TypeScript frontend, and support for NVIDIA GPU passthrough.
 
