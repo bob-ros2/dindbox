@@ -1,0 +1,61 @@
+# Start from the official Docker image, which has the Docker CLI and daemon
+FROM docker:latest
+
+# Install Python, pip, and curl using the Alpine package manager.
+# The 'venv' module is included in the standard 'python3' package.
+RUN apk add --no-cache python3 py3-pip curl openssh sudo
+
+# Create a new user for SSH access. Avoid using root for SSH.
+RUN adduser -D -s /bin/sh dind
+RUN echo "dind:dind" | chpasswd
+RUN adduser dind docker
+
+# Configure the SSH server
+# - PermitRootLogin no: Disables root login via SSH (good security practice)
+# - PasswordAuthentication yes: Allows password-based login (for this example)
+RUN echo "PermitRootLogin no" >> /etc/ssh/sshd_config && \
+    echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
+
+# Generate SSH host keys. This is crucial for the server to start.
+RUN ssh-keygen -A
+
+# setup ssh keys to allow mcp server to control docker
+RUN mkdir -p /home/dind/.ssh 
+COPY ./authorized_keys /home/dind/.ssh/
+RUN chmod -R 700 /home/dind/.ssh \
+  && chown -R dind:dind /home/dind/.ssh
+
+# Expose the standard SSH port
+EXPOSE 22
+
+# Set the working directory
+WORKDIR /app
+
+# Create a virtual environment
+RUN python3 -m venv /opt/venv
+
+# Activate the virtual environment by adding it to the PATH.
+# This ensures that any subsequent RUN, CMD, or ENTRYPOINT commands
+# use the python and pip from this venv.
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy dependency definitions and the entrypoint script
+COPY pyproject.toml ./
+COPY entrypoint.sh /usr/local/bin/
+
+# Make the entrypoint script executable
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Install project dependencies, plus fastapi and uvicorn for the API server
+# This pip command will now use the pip from /opt/venv/bin/pip
+RUN pip install . fastapi "uvicorn[standard]"
+
+# Copy the rest of the application's source code and static data
+COPY ./src ./src
+COPY ./static ./static
+
+# Expose the port the app runs on
+EXPOSE 8000
+
+# Set the entrypoint to our custom script
+ENTRYPOINT ["entrypoint.sh"]
