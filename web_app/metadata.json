@@ -1,0 +1,6 @@
+
+{
+  "name": "Docker API Client",
+  "description": "A web UI to interact with a Docker API server. Manage containers, images, networks, and volumes with dynamically generated forms and a syntax-highlighted JSON response viewer.",
+  "requestFramePermissions": []
+}
