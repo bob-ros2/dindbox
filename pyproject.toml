@@ -1,0 +1,25 @@
+[project]
+name = "dindbox"
+version = "0.1.0"
+description = "Docker DinD API/UI/MCP Server"
+requires-python = ">=3.10"
+dependencies = [
+    "docker>=7.1.0",
+    "mcp>=1.1.0,<2.0",
+    "paramiko>=3.5.1,<4.0",
+    "pydantic>=2.10.3",
+    "pydantic-settings>=2.6.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+docker-mcp-server = "docker_mcp_server:main"
+
+[project.urls]
+Repository = "https://github.com/bob-ros2/dindbox.git"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/docker_mcp_server"]
