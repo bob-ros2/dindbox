@@ -1,0 +1,165 @@
+# Docker-in-Docker API Server & Web UI
+
+This project provides a complete environment for managing an isolated Docker instance through both a RESTful API and a modern web interface. It runs a true Docker-in-Docker (DinD) daemon inside a container, making it a powerful tool for CI/CD, automated testing, or providing sandboxed Docker environments.
+
+The entire application is containerized and orchestrated with Docker Compose, including a Python FastAPI backend, a React/TypeScript frontend, and support for NVIDIA GPU passthrough.
+
+## Architecture Overview
+
+The system is composed of several key components running within a single Docker container:
+
+-   **Host Machine**: Runs the main Docker service.
+-   **Main Container (`server` service)**:
+    -   **Docker Daemon (DinD)**: An isolated Docker engine, completely separate from the host's Docker daemon. Its data is persisted in a named volume (`dind-storage`).
+    -   **FastAPI Backend**: A Python application that serves a REST API to control the inner Docker daemon. It also serves the frontend web application.
+    -   **Docker MCP Server**: An alternative `stdio`-based server interface, enabling programmatic control by AI agents and other automated tools.
+    -   **React Frontend**: A responsive web UI for interacting with the API to manage containers, images, etc.
+    -   **SSH Server**: Provides direct shell access into the container for advanced management and debugging.
+
+## Key Features
+
+-   **Isolated Docker Environment**: Safely manage Docker resources without affecting the host system.
+-   **Dual-Interface Control**: Manage the environment via a REST API (with a web UI) or through the `Docker MCP Server`'s standard I/O interface, designed for integration with AI agents and language models.
+-   **Modern Web UI**: A user-friendly interface built with React and TypeScript to visualize and manage Docker resources.
+-   **GPU Acceleration**: Supports NVIDIA GPU passthrough for running GPU-intensive workloads within the DinD environment.
+-   **Easy Deployment**: Get up and running with a single `docker-compose` command.
+-   **Persistent Storage**: The inner Docker daemon's state (images, containers, volumes) is persisted across restarts.
+-   **SSH Access**: Direct access to the container's shell and the inner Docker CLI.
+
+## Prerequisites
+
+-   Docker Engine
+-   Docker Compose
+-   (Optional) For GPU support:
+    -   An NVIDIA GPU
+    -   NVIDIA drivers installed on the host machine
+    -   NVIDIA Container Toolkit installed on the host machine
+
+## Getting Started
+
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/bob-ros2/dindbox.git
+    cd dindbox
+    ```
+
+2.  **(Optional) Configure SSH Access**
+    To enable password-less SSH access, create a file named `authorized_keys` in the project root and add your SSH public key to it. This file will be copied into the container for the `dind` user.
+
+3.  **Build and Run the Service**
+    Use Docker Compose to build the image and start the container in detached mode:
+    ```bash
+    docker-compose up --build -d
+    ```
+    This command builds the multi-stage Docker image, which includes building the React frontend and setting up the Python environment, then starts the service.
+
+4.  **Access the Application**
+    -   **Web UI**: Open your browser and navigate to `http://localhost:8000`
+    -   **API Docs**: The interactive Swagger UI is available at `http://localhost:8000/docs`
+    -   **SSH**: Connect to the container via SSH on port `2223`:
+        ```bash
+        ssh dind@localhost -p 2223
+        ```
+        The password is `dind` (as set in the `Dockerfile`), or use your SSH key if you configured `authorized_keys`.
+
+## Modes of Operation
+
+This application provides two primary modes for interacting with the Docker-in-Docker environment:
+
+### 1. Web UI & REST API
+
+The default mode, launched via `docker-compose`, runs a FastAPI server that exposes a full REST API for Docker management. This is paired with a responsive React web UI and interactive Swagger documentation, making it ideal for human users and traditional API integrations.
+
+### 2. Docker MCP Server (for AI Agents)
+
+The project includes the `Docker MCP Server`, a component designed for programmatic use by automated systems like AI agents or Large Language Models (LLMs) with tool-calling capabilities.
+
+Instead of a web server, it can run in a mode that communicates over standard input/output (`stdio`). It processes structured commands (e.g., JSON) from `stdin` and returns the results to `stdout`. This provides a robust, scriptable interface for an AI model to safely execute Docker operations within the container's sandboxed environment. This functionality is provided by the `run_stdio` function within the `docker_mcp_server` package.
+
+Here is an example configuration for an external tool-calling framework to launch and interact with the MCP server:
+
+```json
+{
+  "command": "uvx",
+  "args": [
+    "/path/to/dindbox/",
+    "docker_mcp_server"
+  ],
+  "env": {
+    "DOCKER_HOST": "ssh://dind@thehostname:2223"
+  },
+  "type": "stdio",
+  "active": true
+}
+```
+
+This configuration instructs a tool runner to:
+- Execute the `docker_mcp_server` command within its environment.
+- Set the `DOCKER_HOST` environment variable to connect to our containerized Docker daemon via SSH.
+- Communicate with the server using standard I/O (`stdio`).
+
+## Development
+
+You can work on the backend and frontend services separately.
+
+### Frontend (React App)
+
+The frontend source code is in the `./web_app` directory.
+
+1.  **Navigate to the web app directory:**
+    ```bash
+    cd web_app
+    ```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+3.  **Start the development server:**
+    ```bash
+    npm run dev
+    ```
+    This will start a local server (usually on port 5173) with hot-reloading. Note that API calls will need to be proxied to the running backend container on port 8000.
+
+4.  **Build for production:**
+    To manually build the frontend assets, run:
+    ```bash
+    npm run build
+    ```
+    The output will be placed in `./web_app/dist`. The main `Dockerfile` handles this process automatically during the image build.
+
+### Backend (FastAPI Server)
+
+The backend source code is in the `./src` directory. It's recommended to use a Python virtual environment.
+
+1.  **Create and activate a virtual environment:**
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+2.  **Install dependencies:**
+    The project is set up as an editable package. Install it along with the server dependencies:
+    ```bash
+    pip install -e . fastapi "uvicorn[standard]"
+    ```
+3.  **Run the development server:**
+    ```bash
+    uvicorn src.docker_mcp_server.api_server:app --host 0.0.0.0 --port 8000 --reload
+    ```
+    The `--reload` flag enables hot-reloading when source files change. Note that this local server will not have access to a Docker daemon unless you have one running and configured.
+
+## Project Structure
+
+```
+.
+├── docker-compose.yaml     # Defines the services, networks, and volumes.
+├── Dockerfile              # Multi-stage Dockerfile for building the final image.
+├── entrypoint.sh           # Script to start sshd, dockerd, and the API server.
+├── pyproject.toml          # Python project and dependency definitions.
+├── README.md               # Main project README.
+├── src/                    # Python backend source code.
+├── static/                 # Static assets for the backend.
+└── web_app/                # React/TypeScript frontend source code.
+    ├── package.json        # Frontend dependencies and scripts.
+    ├── vite.config.ts      # Vite build configuration.
+    └── src/                # Frontend component source.
+```
