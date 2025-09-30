@@ -12,7 +12,6 @@ The system is composed of several key components running within a single Docker 
 -   **Main Container (`server` service)**:
     -   **Docker Daemon (DinD)**: An isolated Docker engine, completely separate from the host's Docker daemon. Its data is persisted in a named volume (`dind-storage`).
     -   **FastAPI Backend**: A Python application that serves a REST API to control the inner Docker daemon. It also serves the frontend web application.
-    -   **Docker MCP Server**: An alternative `stdio`-based server interface, enabling programmatic control by AI agents and other automated tools.
     -   **React Frontend**: A responsive web UI for interacting with the API to manage containers, images, etc.
     -   **SSH Server**: Provides direct shell access into the container for advanced management and debugging.
 
