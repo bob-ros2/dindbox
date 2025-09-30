@@ -55,7 +55,7 @@ The system is composed of several key components running within a single Docker 
 
 4.  **Access the Application**
     -   **Web UI**: Open your browser and navigate to `http://localhost:8000`
-    -   **API Docs**: The interactive Swagger UI is available at `http://localhost:8000/docs`
+    -   **API Docs**: The interactive Swagger UI is available at `http://localhost:8000/api/v1/docs`
     -   **SSH**: Connect to the container via SSH on port `2223`:
         ```bash
         ssh dind@localhost -p 2223
