@@ -44,7 +44,7 @@ jobs:
           echo "Server is up!"
 
       - name: Download OpenAPI JSON spec
-        run: curl -sf -o swagger.json http://127.0.0.1:8000/api/v1/openapi.json
+        run: curl -sf -o openapi.json http://127.0.0.1:8000/api/v1/openapi.json
 
       - name: Stop API server
         # This will run even if previous steps fail to prevent orphaned processes
@@ -53,15 +53,16 @@ jobs:
           echo "Stopping API server (PID: ${{ env.SERVER_PID }})..."
           kill ${{ env.SERVER_PID }}
 
-      - name: Commit and push swagger.json
+      - name: Commit and push openapi.json
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot@users.noreply.github.com'
-          git add swagger.json
+          git add openapi.json
           # Check if there are changes to commit
           if git diff --staged --quiet; then
-            echo "No changes to swagger.json to commit."
+            echo "No changes to openapi.json to commit."
           else
-            git commit -m "docs: auto-generate swagger.json"
+            git commit -m "docs: auto-generate openapi.json"
             git push
           fi
+          
