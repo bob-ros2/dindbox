@@ -68,13 +68,13 @@ This application provides two primary modes for interacting with the Docker-in-D
 
 ### 1. Web UI & REST API
 
-The default mode, launched via `docker-compose`, runs a FastAPI server that exposes a full REST API for Docker management. This is paired with a responsive React web UI and interactive Swagger documentation, making it ideal for human users and traditional API integrations.
+The default mode, launched via `docker compose`, runs a FastAPI server that exposes a full REST API for Docker management. This is paired with a responsive React web UI and interactive Swagger documentation, making it ideal for human users and traditional API integrations.
 
 ### 2. Docker MCP Server (for AI Agents)
 
-The project includes the `Docker MCP Server`, a component designed for programmatic use by automated systems like AI agents or Large Language Models (LLMs) with tool-calling capabilities.
+The project includes the `Docker MCP Server`, a component designed for programmatic use by automated systems like AI agents or Large Language Models (LLMs) with tool-calling capabilities. The MCP Server is a standalone component that can be run independently of the Docker-in-Docker environment. It is capable of connecting to and managing any accessible Docker daemon.
 
-Instead of a web server, it can run in a mode that communicates over standard input/output (`stdio`). It processes structured commands (e.g., JSON) from `stdin` and returns the results to `stdout`. This provides a robust, scriptable interface for an AI model to safely execute Docker operations within the container's sandboxed environment. This functionality is provided by the `run_stdio` function within the `docker_mcp_server` package.
+Instead of a web server, it run in a mode that communicates over standard input/output (`stdio`). It processes structured commands (e.g., JSON) from `stdin` and returns the results to `stdout`. This provides a robust, scriptable interface for an AI model to safely execute Docker operations within the container's sandboxed environment. This functionality is provided by the `run_stdio` function within the `docker_mcp_server` package.
 
 Here is an example configuration for an external tool-calling framework to launch and interact with the MCP server:
 
