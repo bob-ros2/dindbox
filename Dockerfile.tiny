@@ -1,4 +1,19 @@
-# Start from the official Docker image, which has the Docker CLI and daemon
+# Stage 1: Build the frontend
+FROM node:20 as web_builder
+
+WORKDIR /app
+
+# Copy web_app package files and install dependencies
+COPY ./web_app/package.json ./web_app/package-lock.json* ./web_app/
+RUN cd web_app && npm install
+
+# Copy the rest of the web_app source code
+COPY ./web_app ./web_app
+
+# Build the react app
+RUN cd web_app && npm run build
+
+# Stage 2: Final image
 FROM docker:latest
 
 # Install Python, pip, and curl using the Alpine package manager.
@@ -53,6 +68,7 @@ RUN pip install . fastapi "uvicorn[standard]"
 # Copy the rest of the application's source code and static data
 COPY ./src ./src
 COPY ./static ./static
+COPY --from=web_builder /app/web_app/dist ./static
 
 # Expose the port the app runs on
 EXPOSE 8000
