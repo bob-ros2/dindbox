@@ -1,26 +1,23 @@
 
 import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
-import { DashboardView } from './views/DashboardView';
 import { DockerControlView } from './views/DockerControlView';
 import { DockerUiView } from './views/DockerUiView';
 import { View } from './types';
 import { MENU_ITEMS } from './constants';
 
 const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<View>(View.DASHBOARD);
+  const [activeView, setActiveView] = useState<View>(View.DOCKER_UI);
   const [activeSubView, setActiveSubView] = useState<string>('containers');
 
   const renderContent = () => {
     switch (activeView) {
-      case View.DASHBOARD:
-        return <DashboardView />;
       case View.DOCKER_UI:
-        return <DockerUiView initialSubViewId={activeSubView} />;
+        return <DockerUiView initialSubViewId={activeSubView} setActiveView={setActiveView} />;
       case View.DOCKER_CONTROL:
         return <DockerControlView />;
       default:
-        return <DashboardView />;
+        return <DockerUiView initialSubViewId={activeSubView} setActiveView={setActiveView} />;
     }
   };
 
