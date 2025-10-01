@@ -83,7 +83,7 @@ Here is an example configuration for an external tool-calling framework to launc
   "command": "uvx",
   "args": [
     "/path/to/dindbox/",
-    "docker_mcp_server"
+    "docker-mcp-server"
   ],
   "env": {
     "DOCKER_HOST": "ssh://dind@thehostname:2223"
