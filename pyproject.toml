@@ -1,5 +1,5 @@
 [project]
-name = "dindbox"
+name = "docker-mcp-server"
 version = "0.1.0"
 description = "Docker DinD API/UI/MCP Server"
 requires-python = ">=3.10"
