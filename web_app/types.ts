@@ -1,6 +1,7 @@
 
+import type { ReactNode } from 'react';
+
 export enum View {
-  DASHBOARD = 'DASHBOARD',
   DOCKER_CONTROL = 'DOCKER_CONTROL',
   DOCKER_UI = 'DOCKER_UI',
 }
@@ -13,7 +14,8 @@ export interface SubMenuItem {
 export interface MenuItem {
   id: View | string;
   text: string;
-  icon: JSX.Element;
+  // FIX: Use ReactNode to solve "Cannot find namespace 'JSX'" error.
+  icon: ReactNode;
   view?: View;
   children?: SubMenuItem[];
 }

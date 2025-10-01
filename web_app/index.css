@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Note: Your custom CSS variables like --color-border should be defined here or in another CSS file imported by your project. */
