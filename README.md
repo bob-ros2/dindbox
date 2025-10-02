@@ -109,8 +109,9 @@ Here is an example configuration for an external tool-calling framework to launc
 
 This configuration instructs a tool runner to:
 - Execute the `docker_mcp_server` command within its environment.
-- Set the `DOCKER_HOST` environment variable to connect to the containerized Docker daemon via SSH. To connect to your local Docker daemon instead, simply omit the env section.
+- Set the `DOCKER_HOST` environment variable to connect to the containerized Docker daemon via SSH. To connect to your local Docker daemon instead, simply omit the `env` section.
 - Communicate with the server using standard I/O (`stdio`).
+
 
 ## Development
 
