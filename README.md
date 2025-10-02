@@ -20,7 +20,8 @@ The system is composed of several key components running within a single Docker 
 -   **Isolated Docker Environment**: Safely manage Docker resources without affecting the host system.
 -   **Dual-Interface Control**: Manage the environment via a REST API (with a web UI) or through the `Docker MCP Server`'s standard I/O interface, designed for integration with AI agents and language models.
 -   **Modern Web UI**: A user-friendly interface built with React and TypeScript to visualize and manage Docker resources.
--   **GPU Acceleration**: Supports NVIDIA GPU passthrough for running GPU-intensive workloads within the DinD environment.
+-   **Flexible Deployment Options**: Includes a standard `Dockerfile` based on Ubuntu with NVIDIA GPU support, and an alternative `Dockerfile.tiny` based on Alpine Linux for a lightweight, CPU-only deployment.
+-   **GPU Acceleration**: Supports NVIDIA GPU passthrough for running GPU-intensive workloads within the DinD environment (standard Dockerfile only).
 -   **Easy Deployment**: Get up and running with a single `docker-compose` command.
 -   **Persistent Storage**: The inner Docker daemon's state (images, containers, volumes) is persisted across restarts.
 -   **SSH Access**: Direct access to the container's shell and the inner Docker CLI.
@@ -48,10 +49,23 @@ The system is composed of several key components running within a single Docker 
 3.  **Build and Run the Service**
     Use Docker Compose to build the image and start the container in detached mode:
     ```bash
-    # remove -d option to see the application running
+    # This uses the default Dockerfile with GPU support
     docker compose up --build -d
     ```
     This command builds the multi-stage Docker image, which includes building the React frontend and setting up the Python environment, then starts the service.
+
+    ### Alternative: Running the Lightweight Version
+    This project also includes a minimal setup for CPU-only environments, which results in a significantly smaller Docker image and faster build times. It uses `Dockerfile.tiny` and is orchestrated by `docker-compose.tiny.yaml`.
+
+    **Key Differences:**
+    -   **Base Image**: Uses `docker:latest` (Alpine) instead of `ubuntu:22.04`.
+    -   **GPU Support**: Does **not** include the NVIDIA Container Toolkit.
+    -   **Size**: Produces a much smaller final image.
+
+    To run the lightweight version, use the following command:
+    ```bash
+    docker compose -f docker-compose.tiny.yaml up --build -d
+    ```
 
 4.  **Access the Application**
     -   **Web UI**: Open your browser and navigate to `http://localhost:8000`
@@ -95,7 +109,7 @@ Here is an example configuration for an external tool-calling framework to launc
 
 This configuration instructs a tool runner to:
 - Execute the `docker_mcp_server` command within its environment.
-- Set the `DOCKER_HOST` environment variable to connect to our containerized Docker daemon via SSH.
+- Set the `DOCKER_HOST` environment variable to connect to the containerized Docker daemon via SSH. To connect to your local Docker daemon instead, simply omit the env section.
 - Communicate with the server using standard I/O (`stdio`).
 
 ## Development
@@ -160,14 +174,23 @@ The backend source code is in the `./src` directory. It's recommended to use a P
 ```
 .
 ├── docker-compose.yaml     # Defines the services, networks, and volumes.
-├── Dockerfile              # Multi-stage Dockerfile for building the final image.
+├── Dockerfile              # Main multi-stage Dockerfile for the final image.
+├── Dockerfile.tiny         # An alternative, smaller Dockerfile.
 ├── entrypoint.sh           # Script to start sshd, dockerd, and the API server.
-├── pyproject.toml          # Python project and dependency definitions.
+├── pyproject.toml          # Python project and dependency definitions (PEP 621).
 ├── README.md               # Main project README.
+├── requirements.txt        # Additional Python dependencies for the server.
 ├── src/                    # Python backend source code.
-├── static/                 # Static assets for the backend.
+│   └── docker_mcp_server/
+│       ├── api_server.py   # FastAPI application definitions.
+│       ├── input_schemas.py# Pydantic models for API input validation.
+│       └── ...             # Other backend modules.
+├── static/                 # Static assets for the backend (hosts the built React app).
 └── web_app/                # React/TypeScript frontend source code.
-    ├── package.json        # Frontend dependencies and scripts.
+    ├── postcss.config.js   # Configuration for PostCSS.
+    ├── tailwind.config.js  # Configuration file for Tailwind CSS.
+    ├── package.json        # Frontend dependencies and scripts (npm).
+    ├── tsconfig.json       # TypeScript compiler configuration.
     ├── vite.config.ts      # Vite build configuration.
-    └── src/                # Frontend component source.
+    └── src/                # Frontend component source files.
 ```
