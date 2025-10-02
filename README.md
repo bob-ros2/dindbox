@@ -61,7 +61,7 @@ The default mode, launched via `docker compose`, runs the FastAPI server and Rea
 
 ### 2. Docker MCP Server (for AI Agents)
 
-The `docker_mcp_server` provides a `stdio` interface for programmatic control, designed for AI agents or LLMs with tool-calling capabilities. It allows an automated system to safely execute Docker commands within the sandboxed environment.
+The `docker-mcp-server` provides a `stdio` interface for programmatic control, designed for AI agents or LLMs with tool-calling capabilities. It allows an automated system to safely execute Docker commands within the sandboxed environment.
 
 Example tool-calling configuration:
 ```json
