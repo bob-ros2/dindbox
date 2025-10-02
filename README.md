@@ -192,5 +192,5 @@ The backend source code is in the `./src` directory. It's recommended to use a P
     ├── package.json        # Frontend dependencies and scripts (npm).
     ├── tsconfig.json       # TypeScript compiler configuration.
     ├── vite.config.ts      # Vite build configuration.
-    └── src/                # Frontend component source files.
+    └── ...                 # Other frontend component source files.
 ```
