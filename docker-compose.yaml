@@ -11,7 +11,7 @@ services:
       # This named volume will persist the data (images, containers, etc.)
       # of the *inner* Docker daemon across container restarts.
       - dind-storage:/var/lib/docker
-      - /mnt/ros/Models:/models:ro
+      #- /models:/models:ro
     restart: unless-stopped
     healthcheck:
       # Command to check if the API server is responsive
