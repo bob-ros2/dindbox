@@ -14,7 +14,6 @@ export interface SubMenuItem {
 export interface MenuItem {
   id: View | string;
   text: string;
-  // FIX: Use ReactNode to solve "Cannot find namespace 'JSX'" error.
   icon: ReactNode;
   view?: View;
   children?: SubMenuItem[];
