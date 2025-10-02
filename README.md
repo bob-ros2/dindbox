@@ -98,6 +98,26 @@ pip install -e . fastapi "uvicorn[standard]"
 uvicorn src.docker_mcp_server.api_server:app --host 0.0.0.0 --port 8000 --reload
 ```
 
+### Connecting Frontend and Backend Locally
+
+For the web UI to work properly in a local development environment, it needs to connect to the API server at the relative path `/api/v1`. To achieve this, you can build the frontend and serve its static files directly from the FastAPI backend.
+
+1.  **Build the React app:**
+    ```bash
+    # From the project root
+    cd web_app && npm run build
+    ```
+
+2.  **Copy the build output to the `static` directory:**
+    ```bash
+    # From the project root
+    cp -r web_app/dist/* static/
+    ```
+
+3.  **Run the FastAPI server** as described in the backend section.
+
+You can now access both the frontend and backend from `http://localhost:8000`.
+
 ## Security Considerations
 
 -   **AI Agent Control**: This tool grants AI agents significant capabilities. An unconstrained or improperly prompted agent could perform unintended actions. Use with agents that have appropriate safeguards or human oversight.
