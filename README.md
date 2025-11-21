@@ -1,4 +1,4 @@
-# Docker DinD API/UI/MCP Server
+# Package [DINDBOX](https://github.com/bob-ros2/dindbox)
 
 Manage an isolated Docker-in-Docker (DinD) instance via a REST API, a modern web UI, and a Model Context Protocol (MCP) server for AI agents.
 
